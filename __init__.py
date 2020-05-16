@@ -13,12 +13,12 @@ with open('live_log.txt','x') as live_log:
 
 
 def log(string):
-    print(string)
+    print('{0} $ {1}'.format(datetime.datetime.now(),string))
     with open('live_log.txt','a') as live_log:
         live_log.write("{0} $ {1}\n".format(datetime.datetime.now(),string))
 
 def close_log():
-    print('Killing Client.')
+    print('Killing Client.\n')
     os.remove('live_log.txt')
 
     

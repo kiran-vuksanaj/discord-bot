@@ -24,7 +24,7 @@ fi
 echo "Launching Client..."
 echo "Launching Client..." >> longterm_log.txt
 date >> longterm_log.txt
-python test.py &>> longterm_log.txt &
+python __init__.py &>> longterm_log.txt &
 disown;
 deactivate;
 
