@@ -1,4 +1,11 @@
 
+
+# virtual environment
+venv/
+
+# key file:
+secret_keys.json
+
 # Created by https://www.gitignore.io/api/emacs,python,flask
 # Edit at https://www.gitignore.io/?templates=emacs,python,flask
 
@@ -37,7 +44,7 @@ tramp
 .cask/
 dist/
 
-# Flycheck
+# flycheck
 flycheck_*.el
 
 # server auth directory
