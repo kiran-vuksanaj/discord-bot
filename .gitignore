@@ -4,7 +4,10 @@
 venv/
 
 # key file:
-secret_keys.json
+.secret_keys
+
+# log files:
+*_log.txt
 
 # Created by https://www.gitignore.io/api/emacs,python,flask
 # Edit at https://www.gitignore.io/?templates=emacs,python,flask
