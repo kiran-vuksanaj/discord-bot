@@ -20,11 +20,16 @@ if [[ ! -d "venv" ]]; then
 	deactivate;
 fi
 
-. venv/bin/activate
-echo "Launching Client..."
-echo "Launching Client..." >> longterm_log.txt
-date >> longterm_log.txt
-python __init__.py &>> longterm_log.txt &
-disown;
-deactivate;
+if [[ -f "live_log.txt" ]]; then
+	echo "Client already running."
+else
+	. venv/bin/activate
+	echo "Launching Client..."
+	echo "Launching Client..." >> longterm_log.txt
+	date >> longterm_log.txt
+	python __init__.py &>> longterm_log.txt &
+	disown;
+	deactivate;
+fi
+
 
