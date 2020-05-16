@@ -10,7 +10,10 @@ class KhosekhClient(discord.Client):
         print('Logged on as {0}!'.format(self.user))
 
     async def on_message(self, message):
-        print('Message from {0.author}: {0.content}'.format(message))
+        print(message)
+        if '$hello' in message.content:
+            await message.channel.send('Hello World!')
+            print('Message sent!')
 
 if __name__ == "__main__":
     TOKEN = getenv('DISCORD_TOKEN')
