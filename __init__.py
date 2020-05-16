@@ -5,6 +5,7 @@
 import os
 import sys
 import atexit
+import subprocess
 import datetime
 import discord
 
@@ -30,7 +31,14 @@ class KhosekhClient(discord.Client):
         log("{0.author}: {0.content}".format(message))
         if '$hello' in message.content:
             await message.channel.send('Hello World!')
-            log('Message sent!')
+            log('Hello World message sent!')
+        elif message.content.startswith('$version'):
+            subp = subprocess.Popen(['git','show','-s'],stdout=subprocess.PIPE)
+            commit = subp.communicate()[0].decode('utf-8')
+            log(commit)
+            await message.channel.send('```\n{0}\n```'.format(commit))
+            log('commit message sent')
+
 
 if __name__ == "__main__":
     atexit.register(close_log)
