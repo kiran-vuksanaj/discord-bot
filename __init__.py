@@ -2,11 +2,7 @@
 # Khosekh Discord Bot
 # Hello World
 
-import os
-import sys
-import atexit
-import subprocess
-import datetime
+import os, sys, atexit, datetime, random
 import discord
 
 with open('live_log.txt','x') as live_log:
@@ -39,6 +35,14 @@ class KhosekhClient(discord.Client):
                 await message.channel.send('```\n{0}\n```'.format(version_log.read()))
             # await message.channel.send('```\nCurrent Version\n{0}\n```'.format(commit))
             log('commit message sent')
+        elif '$paige' in message.content:
+            log('received paige command')
+            with open('dat/paige.csv') as paige_messages:
+                messages = paige_messages.readlines()
+                log(messages)
+                await message.channel.send(random.choice(messages))
+                log('paige message sent')
+            log('end of paige block')
         else:
             log('irrelevant message')
 
