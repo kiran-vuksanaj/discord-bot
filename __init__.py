@@ -2,7 +2,7 @@
 # Khosekh Discord Bot
 # Hello World
 
-import os, sys, atexit, datetime, random, pprint, json
+import os, sys, atexit, datetime, random, pprint, json, re
 import discord
 
 with open('live_log.txt','x') as live_log:
@@ -46,7 +46,13 @@ class KhosekhClient(discord.Client):
                 log(messages)
                 await message.channel.send(random.choice(messages))
                 log('paige message sent')
-            log('end of paige block')
+        elif len(message.embeds) == 1 and message.embeds[0].title=="Now playing":
+            log('now playing message')
+            regex_match = re.match(r'\s*\[(.*)\]\s*\((.*)\)\s*\[<@(\d+)>\]\s*',message.embeds[0].description)
+            log('title: [{0}]'.format(regex_match.group(1)))
+            log('link: [{0}]'.format(regex_match.group(2)))
+            log('user: [{0}]'.format(int(regex_match.group(3))))
+            await message.channel.send('hey groovy whats good')
         else:
             log('irrelevant message')
 
