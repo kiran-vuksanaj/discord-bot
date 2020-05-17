@@ -14,7 +14,7 @@ fi
 
 if [[ ! -d "venv" ]]; then
 	echo "Creating Virtual Environment...";
-	virtualenv venv;
+	python3 -m venv venv;
 	. venv/bin/activate;
 	pip3 install -r requirements.txt;
 	deactivate;
