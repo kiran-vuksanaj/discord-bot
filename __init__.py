@@ -2,7 +2,7 @@
 # Khosekh Discord Bot
 # Hello World
 
-import os, sys, atexit, datetime, random
+import os, sys, atexit, datetime, random, pprint, json
 import discord
 
 with open('live_log.txt','x') as live_log:
@@ -24,7 +24,11 @@ class KhosekhClient(discord.Client):
         log('Logged on as {0}!'.format(self.user))
 
     async def on_message(self, message):
-        log("{0.author}: {0.content}".format(message))
+        log("{0.author}: {0.content} // {1}".format(message,len(message.embeds)))
+        # log( pprint.pformat(message, indent=4, depth=2) )
+        if len(message.embeds) > 0:
+            for embed in message.embeds:
+                log( json.dumps( embed.to_dict(), indent=4, sort_keys=True ) )
         if '$hello' in message.content:
             await message.channel.send('Hello World!')
             log('Hello World message sent!')
