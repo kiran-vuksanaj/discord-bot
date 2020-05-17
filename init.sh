@@ -21,12 +21,13 @@ if [[ ! -d "venv" ]]; then
 fi
 
 if [[ -f "live_log.txt" ]]; then
-	echo "Client already running."
+	echo "Client already running.";
 else
-	. venv/bin/activate
-	echo "Launching Client..."
-	echo "Launching Client..." >> longterm_log.txt
-	date >> longterm_log.txt
+	. venv/bin/activate;
+	git show -s > version_log.txt;
+	echo "Launching Client...";
+	echo "Launching Client..." >> longterm_log.txt;
+	date >> longterm_log.txt;
 	python __init__.py &>> longterm_log.txt &
 	disown;
 	deactivate;

@@ -22,7 +22,7 @@ def close_log():
     print('Killing Client.\n')
     os.remove('live_log.txt')
 
-    
+
 class KhosekhClient(discord.Client):
     async def on_ready(self):
         log('Logged on as {0}!'.format(self.user))
@@ -32,12 +32,15 @@ class KhosekhClient(discord.Client):
         if '$hello' in message.content:
             await message.channel.send('Hello World!')
             log('Hello World message sent!')
-        elif message.content.startswith('$version'):
-            subp = subprocess.Popen(['git','show','-s'],stdout=subprocess.PIPE)
-            commit = subp.communicate()[0].decode('utf-8')
-            log(commit)
-            await message.channel.send('```\n{0}\n```'.format(commit))
+        elif '$version' in message.content:
+            # await message.channel.send('te amo mucho paige\n:yellow_heart:')
+            log('received version command ('+message.content+')')
+            with open('version_log.txt','r') as version_log:
+                await message.channel.send('```\n{0}\n```'.format(version_log.read()))
+            # await message.channel.send('```\nCurrent Version\n{0}\n```'.format(commit))
             log('commit message sent')
+        else:
+            log('irrelevant message')
 
 
 if __name__ == "__main__":
