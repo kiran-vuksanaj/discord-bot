@@ -5,6 +5,8 @@
 import os, sys, atexit, datetime, random, pprint, json, re
 import discord
 
+import spotify
+
 with open('live_log.txt','x') as live_log:
     live_log.write('{0}\n'.format(os.getpid()))
 
@@ -26,12 +28,12 @@ class KhosekhClient(discord.Client):
     async def on_message(self, message):
         log("{0.author}: {0.content} // {1}".format(message,len(message.embeds)))
         # log( pprint.pformat(message, indent=4, depth=2) )
-        if len(message.embeds) > 0:
-            for embed in message.embeds:
-                log( json.dumps( embed.to_dict(), indent=4, sort_keys=True ) )
+
         if '$hello' in message.content:
             await message.channel.send('Hello World!')
             log('Hello World message sent!')
+
+
         elif '$version' in message.content:
             # await message.channel.send('te amo mucho paige\n:yellow_heart:')
             log('received version command ('+message.content+')')
@@ -39,6 +41,8 @@ class KhosekhClient(discord.Client):
                 await message.channel.send('```\n{0}\n```'.format(version_log.read()))
             # await message.channel.send('```\nCurrent Version\n{0}\n```'.format(commit))
             log('commit message sent')
+
+
         elif '$paige' in message.content:
             log('received paige command')
             with open('dat/paige.csv') as paige_messages:
@@ -46,6 +50,21 @@ class KhosekhClient(discord.Client):
                 log(messages)
                 await message.channel.send(random.choice(messages))
                 log('paige message sent')
+
+
+        elif message.content.strip() == '$auth':
+            log('received auth command')
+            auth_embed = discord.Embed(
+                title='Spotify Authentication',
+                type='rich',
+                description='Click here to provide spotify authentication',
+                url=spotify.gen_requestlink()
+                )
+            log(auth_embed)
+            log(auth_embed.to_dict())
+            await message.channel.send(embed=auth_embed)
+
+
         elif len(message.embeds) == 1 and message.embeds[0].title=="Now playing":
             log('now playing message')
             regex_match = re.match(r'\s*\[(.*)\]\s*\((.*)\)\s*\[<@(\d+)>\]\s*',message.embeds[0].description)
@@ -53,6 +72,8 @@ class KhosekhClient(discord.Client):
             log('link: [{0}]'.format(regex_match.group(2)))
             log('user: [{0}]'.format(int(regex_match.group(3))))
             await message.channel.send('hey groovy whats good')
+
+
         else:
             log('irrelevant message')
 
