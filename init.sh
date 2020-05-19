@@ -4,6 +4,7 @@ if [[ -f ".secret_keys" ]]; then
 	export DISCORD_TOKEN=${keys[1]};
 	export SPOTIPY_CLIENT_ID=${keys[3]};
 	export SPOTIPY_CLIENT_SECRET=${keys[5]};
+	export SPOTIPY_REDIRECT_URI=${keys[7]};
 	echo "Successfully exported keys to environment.";
 else
 	echo "./.secret_keys not found. Please enter keys.";
@@ -19,6 +20,10 @@ else
 	read ans;
 	export SPOTIPY_CLIENT_SECRET=$ans;
 	echo "spotify_secret: $SPOTIPY_CLIENT_SECRET" >> .secret_keys;
+	echo -n "Spotify Redirect URI: ";
+	read ans;
+	export SPOTIPY_REDIRECT_URI=$ans;
+	echo "spotify_uri: $SPOTIPY_REDIRECT_URI" >> .secret_keys;
 	echo "Keys exported to environment and ./.secret_keys";
 fi
 
