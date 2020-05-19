@@ -15,7 +15,12 @@ SPOTIFY_CLIENT_ID = getenv('SPOTIFY_CLIENT_ID').strip()
 SPOTIFY_CLIENT_SECRET = getenv('SPOTIFY_CLIENT_SECRET').strip()
 SPOTIFY_REDIRECT_URI = getenv('SPOTIFY_REDIRECT_URI').strip()
 
+tokens = {}
+
 print(SPOTIFY_REDIRECT_URI)
+
+class NotAuthenticatedError(Exception):
+    pass
 
 
 # wait ... this is a constant isnt it?
@@ -44,15 +49,52 @@ def request_tokens(authcode):
     headers = {
         'Authorization':'Basic %s' % auth_header.decode('ascii')
         }
-    print(headers)
+
     params = {
         'grant_type':'authorization_code',
         'code':authcode,
         'redirect_uri':SPOTIFY_REDIRECT_URI,
         }
     TOKEN_ENDPOINT = 'https://accounts.spotify.com/api/token'
-    res = request('POST',TOKEN_ENDPOINT,headers=headers,data=params)
-    print(dumps(res.json(),indent=4))
+    response = request('POST',TOKEN_ENDPOINT,headers=headers,data=params).json()
+    if 'error' in response:
+        print('Token Grant Error')
+        print( dumps(response,indent=4) )
+    else:
+        return response
+
+
     
-code = input('auth code: ')
-request_tokens(code)
+def get_profile(tokens):
+    if tokens == {}:
+        raise NotAuthenticatedError('no access token')
+    headers = {
+        'Authorization':'Bearer %s' % tokens['access_token']
+        }
+    endpoint = 'https://api.spotify.com/v1/me'
+    response = request('GET',endpoint,headers=headers)
+    return response.json()
+
+
+
+def create_playlist(tokens,username,title):
+    if tokens == {}:
+        raise NotAuthenticatedError('no access token')
+    endpoint = "https://api.spotify.com/v1/users/%s/playlists" % username
+    headers = {
+        'Authorization':'Bearer %s' % tokens['access_token'],
+        'Content-Type':'application/json'
+        }
+    params = {
+        'name':title,
+        'description':'Khosekh Groove-Scratcher - Playlist made from Groovy Queue'
+        }
+    response = request('POST',endpoint,headers=headers,json=params).json()
+    return response
+
+# code = input('auth code: ')
+# tokens = request_tokens(code)
+# print('access token: %s' % tokens['access_token'])
+# profile = get_profile(tokens)
+# print(dumps(profile,indent=4))
+# create_playlist(tokens,profile['id'],'dream of loneliness')
