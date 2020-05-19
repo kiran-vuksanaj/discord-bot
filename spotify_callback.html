@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+	<meta charset="utf-8" />
+	<title>
+	  Spotify Authorization
+	</title>
+  </head>
+  <body>
+	<h1>Spotify Authorization</h1>
+	<div id="error-message">
+	  <p>yeet i didn't want u anyway :(</p>
+	</div>
+	<div id="success-message">
+	  <p>Thank you for authorizing! In order to grant this authorization to the discord bot, please copy the following message, and DM it to @Khosekh#5070</p>
+	  <p>-authcode <span id="authcode">[INSERT AUTHCODE HERE]</span></p>
+	</div>
+	
+
+	<script>
+	  const params = new URLSearchParams(window.location.search);
+	  const errorMessage = document.getElementById('error-message');
+	  const successMessage = document.getElementById('success-message');
+	  const authCodeSpace = document.getElementById('authcode');
+	  if ( params.has('error') ) {
+		  successMessage.setAttribute('style','display: none;');
+	  } else {
+		  errorMessage.setAttribute('style','display: none;');
+		  if ( params.has('code') ) {
+			  authCodeSpace.innerHTML = params.get('code');
+		  }
+	  }
+	  
+	</script>
+  </body>
+</html>
