@@ -2,6 +2,8 @@ if [[ -f ".secret_keys" ]]; then
 	echo "Reading Keys from ./.secret_keys...";
 	keys=(`cat .secret_keys`);
 	export DISCORD_TOKEN=${keys[1]};
+	export SPOTIPY_CLIENT_ID=${keys[3]};
+	export SPOTIPY_CLIENT_SECRET=${keys[5]};
 	echo "Successfully exported keys to environment.";
 else
 	echo "./.secret_keys not found. Please enter keys.";
@@ -9,6 +11,14 @@ else
 	read ans;
 	export DISCORD_TOKEN=$ans;
 	echo "discord: $DISCORD_TOKEN" >> .secret_keys;
+	echo -n "Spotify Client ID: ";
+	read ans;
+	export SPOTIPY_CLIENT_ID=$ans;
+	echo "spotify_id: $SPOTIPY_CLIENT_ID" >> .secret_keys;
+	echo -n "Spotify Client Secret: ";
+	read ans;
+	export SPOTIPY_CLIENT_SECRET=$ans;
+	echo "spotify_secret: $SPOTIPY_CLIENT_SECRET" >> .secret_keys;
 	echo "Keys exported to environment and ./.secret_keys";
 fi
 
