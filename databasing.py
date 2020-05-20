@@ -65,6 +65,13 @@ def get_rtoken(uid):
     db.commit()
     return out
 
+def get_spotuser(uid):
+    command = 'SELECT spotify_user FROM auths WHERE discord_uid=:uid'
+    c.execute(command,{'uid':uid})
+    out = c.fetchone()[0]
+    db.commit()
+    return out
+
 def update_tokens(uid,tokens):
     command = 'UPDATE auths SET access_token=?, refresh_token=? WHERE discord_uid=?'
     params = (tokens['access_token'],tokens['refresh_token'],uid)
@@ -74,16 +81,37 @@ def update_tokens(uid,tokens):
 
 # =============== VCHANNEL TABLE FUNCTIONS =============== #
 
+def register_channel(channel_id,uid,playlist_id):
+    spot_user = get_spotuser(uid)
+    command = 'INSERT INTO vchannels (channel_id,tracker_uid,spotify_user,playlist_id) VALUES (?, ?, ?, ?)'
+    params = (channel_id,uid,spot_user,playlist_id)
+    c.execute(command,params)
+    db.commit()
+    return True
+
+def get_playlist_data(uid):
+    command = 'SELECT tracker_uid,spotify_user,playlist_id FROM vchannels WHERE channel_id=:uid'
+    c.execute(command,{'uid':uid})
+    resp = c.fetchone()
+    db.commit()
+    return {
+        'discord_id':resp[0],
+        'spotify_user':resp[1],
+        'playlist_id':resp[2]
+        }
 
 
-# =============== SONG TABLE FUNCTIONS #
+# =============== SONG TABLE FUNCTIONS =============== #
 
 # =============== CONFIG FUNCTION CALLS =============== #
 init_tables()
 
-# test auths table
-# add_auth(44,{'access_token':'green','refresh_token':'blue'},{'id':'card'})
+## test auths table
+add_auth(44,{'access_token':'green','refresh_token':'blue'},{'id':'card'})
 # print('rtoken:',get_rtoken(44))
 # print('atoken:',get_atoken(44))
 # update_tokens(44,{'access_token':'white','refresh_token':'blue'})
 # print('atoken:',get_atoken(44))
+## test vchannels table
+register_channel(42,44,'honey')
+print(get_playlist_data(42))
