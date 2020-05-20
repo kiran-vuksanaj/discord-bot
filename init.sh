@@ -39,11 +39,11 @@ if [[ -f "live_log.txt" ]]; then
 	echo "Client already running.";
 else
 	. venv/bin/activate;
-	git show -s > version_log.txt;
+	git show -s > dat/version.txt;
 	echo "Launching Client...";
-	echo "Launching Client..." >> longterm_log.txt;
-	date >> longterm_log.txt;
-	python __init__.py &>> longterm_log.txt &
+	echo "Launching Client..." >> logs/longterm.txt;
+	date >> logs/longterm.txt;
+	python __init__.py &>> logs/longterm.txt &
 	disown;
 	deactivate;
 fi

@@ -2,28 +2,35 @@
 # Khosekh Discord Bot
 # Hello World
 
-import os, sys, atexit, datetime, random, pprint, json, re
+import os, sys, atexit, datetime, random, pprint, json, re, warnings
 import discord
 
 import spotify
 
-with open('live_log.txt','x') as live_log:
+with open('logs/live.txt','x') as live_log:
     live_log.write('{0}\n'.format(os.getpid()))
 
 
 def log(string):
     print('{0} $ {1}'.format(datetime.datetime.now(),string))
-    with open('live_log.txt','a') as live_log:
+    with open('logs/live.txt','a') as live_log:
         live_log.write("{0} $ {1}\n".format(datetime.datetime.now(),string))
 
-def close_log():
-    print('Killing Client.\n')
-    os.remove('live_log.txt')
-
+# def handle_exit():
+#     warnings.simplefilter('ignore')
+#     client.close()
+    
 
 class KhosekhClient(discord.Client):
     async def on_ready(self):
         log('Logged on as {0}!'.format(self.user))
+
+    async def close(self):
+        await super().close()
+        os.remove('logs/live.txt')
+        print('Live log removed.')
+        print('Killing Client\n')
+        sys.exit()
 
     async def on_message(self, message):
         log("{0.author}: {0.content} // {1}".format(message,len(message.embeds)))
@@ -37,7 +44,7 @@ class KhosekhClient(discord.Client):
         elif '$version' in message.content:
             # await message.channel.send('te amo mucho paige\n:yellow_heart:')
             log('received version command ('+message.content+')')
-            with open('version_log.txt','r') as version_log:
+            with open('dat/version.txt','r') as version_log:
                 await message.channel.send('```\n{0}\n```'.format(version_log.read()))
             # await message.channel.send('```\nCurrent Version\n{0}\n```'.format(commit))
             log('commit message sent')
@@ -100,11 +107,9 @@ class KhosekhClient(discord.Client):
 
 
 if __name__ == "__main__":
-    atexit.register(close_log)
-
     TOKEN = os.getenv('DISCORD_TOKEN')
-
     client = KhosekhClient()
+    atexit.register( lambda: client.close )
     client.run(TOKEN)
 
 

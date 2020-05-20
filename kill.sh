@@ -1,5 +1,5 @@
-if [[ -f "live_log.txt" ]]; then
-	PID=(`head -n 1 live_log.txt`)
+if [[ -f "logs/live.txt" ]]; then
+	PID=(`head -n 1 logs/live.txt`)
 	echo "Client Alive at pid $PID"
 	kill $PID
 	echo "Client Killed"

@@ -7,7 +7,10 @@ venv/
 .secret_keys
 
 # log files:
-*_log.txt
+logs/
+
+# database:
+*.db
 
 # Created by https://www.gitignore.io/api/emacs,python,flask
 # Edit at https://www.gitignore.io/?templates=emacs,python,flask
