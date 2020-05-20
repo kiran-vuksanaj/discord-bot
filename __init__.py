@@ -16,10 +16,6 @@ def log(string):
     with open('logs/live.txt','a') as live_log:
         live_log.write("{0} $ {1}\n".format(datetime.datetime.now(),string))
 
-# def handle_exit():
-#     warnings.simplefilter('ignore')
-#     client.close()
-    
 
 class KhosekhClient(discord.Client):
     async def on_ready(self):
@@ -44,7 +40,7 @@ class KhosekhClient(discord.Client):
         elif '$version' in message.content:
             # await message.channel.send('te amo mucho paige\n:yellow_heart:')
             log('received version command ('+message.content+')')
-            with open('dat/version.txt','r') as version_log:
+            with open('logs/version.txt','r') as version_log:
                 await message.channel.send('```\n{0}\n```'.format(version_log.read()))
             # await message.channel.send('```\nCurrent Version\n{0}\n```'.format(commit))
             log('commit message sent')

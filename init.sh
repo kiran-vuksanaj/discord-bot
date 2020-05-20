@@ -39,7 +39,7 @@ if [[ -f "live_log.txt" ]]; then
 	echo "Client already running.";
 else
 	. venv/bin/activate;
-	git show -s > dat/version.txt;
+	git show -s > logs/version.txt;
 	echo "Launching Client...";
 	echo "Launching Client..." >> logs/longterm.txt;
 	date >> logs/longterm.txt;
