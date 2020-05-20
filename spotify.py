@@ -40,8 +40,6 @@ def gen_requestlink():
     return AUTHORIZE_ENDPOINT+'?'+urlencode(params)
 
 
-print(gen_requestlink())
-
 def request_tokens(authcode):
     auth_header = b64encode( str(SPOTIFY_CLIENT_ID+':'+SPOTIFY_CLIENT_SECRET).encode('ascii') )
     headers = {
