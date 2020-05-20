@@ -43,8 +43,7 @@ else
 	echo "Launching Client...";
 	echo "Launching Client..." >> logs/longterm.txt;
 	date >> logs/longterm.txt;
-	python __init__.py &>> logs/longterm.txt &
-	disown;
+	nohup python __init__.py &>> logs/longterm.txt &!
 	deactivate;
 fi
 

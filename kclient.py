@@ -18,7 +18,6 @@ class KhosekhClient(discord.Client):
         os.remove('logs/live.txt')
         print('Live log removed.')
         print('Killing Client\n')
-        sys.exit()
 
     async def on_message(self, message):
         log("{0.author}: {0.content} // {1}".format(message,len(message.embeds)))
