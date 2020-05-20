@@ -6,7 +6,7 @@ venv/
 .secret_keys
 
 # log files:
-logs/
+logs/*.txt
 
 # database:
 *.db
