@@ -35,7 +35,7 @@ if [[ ! -d "venv" ]]; then
 	deactivate;
 fi
 
-if [[ -f "live_log.txt" ]]; then
+if [[ -f "logs/live.txt" ]]; then
 	echo "Client already running.";
 else
 	. venv/bin/activate;
