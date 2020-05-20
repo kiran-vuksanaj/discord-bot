@@ -64,6 +64,27 @@ class KhosekhClient(discord.Client):
             log(auth_embed.to_dict())
             await message.channel.send(embed=auth_embed)
 
+        elif message.content.strip().startswith('$auth-code'):
+            log('received authorization code')
+            terms = message.content.split()
+            log(terms)
+            if len(terms) < 2:
+                await message.channel.send('Improper usage: $auth-code <authorization code>')
+                log('error message sent')
+            else:
+                log('valid message')
+                authcode = terms[1]
+                log(authcode)
+                tokens = spotify.request_tokens(authcode)
+                log('tokens requested')
+                if tokens:
+                    await message.channel.send('Success! you have now been authenticated.')
+                    log('success message sent')
+                    log(json.dumps(tokens))
+                else:
+                    await message.channel.send('Token failure?')
+                    log('fail message sent')
+                    
 
         elif len(message.embeds) == 1 and message.embeds[0].title=="Now playing":
             log('now playing message')
