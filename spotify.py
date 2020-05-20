@@ -17,8 +17,6 @@ SPOTIFY_REDIRECT_URI = getenv('SPOTIFY_REDIRECT_URI').strip()
 
 tokens = {}
 
-print(SPOTIFY_REDIRECT_URI)
-
 class NotAuthenticatedError(Exception):
     pass
 
