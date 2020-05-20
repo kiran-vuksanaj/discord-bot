@@ -103,15 +103,36 @@ def get_playlist_data(uid):
 
 # =============== SONG TABLE FUNCTIONS =============== #
 
+def add_song_nonduplicate(song_id,playlist_id):
+    command = 'SELECT song_id,playlist_id FROM songs WHERE song_id=? AND playlist_id=?'
+    params = (song_id,playlist_id)
+    c.execute(command,params)
+    db.commit()
+    if c.fetchone():
+        return False
+    else:
+        command = 'INSERT INTO songs (song_id,playlist_id) VALUES (?, ?)'
+        c.execute(command,params)
+        db.commit()
+        return True
+    
+        
+
 # =============== CONFIG FUNCTION CALLS =============== #
 init_tables()
 
-## test auths table
-add_auth(44,{'access_token':'green','refresh_token':'blue'},{'id':'card'})
+# # test auths table
+# add_auth(44,{'access_token':'green','refresh_token':'blue'},{'id':'card'})
 # print('rtoken:',get_rtoken(44))
 # print('atoken:',get_atoken(44))
 # update_tokens(44,{'access_token':'white','refresh_token':'blue'})
 # print('atoken:',get_atoken(44))
-## test vchannels table
-register_channel(42,44,'honey')
-print(get_playlist_data(42))
+# # test vchannels table
+# register_channel(42,44,'honey')
+# print(get_playlist_data(42))
+# # test songs table
+# print(add_song_nonduplicate('hey bitch','do ya'))
+# print(add_song_nonduplicate('hey bitch','do ya'))
+# print(add_song_nonduplicate('hey bitch','do you'))
+# print(add_song_nonduplicate('hiya bitch','do ya'))
+# print(add_song_nonduplicate('we are','asymptotic'))
