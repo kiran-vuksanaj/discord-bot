@@ -7,6 +7,7 @@ import os,sys
 import discord
 
 import spotify
+import databasing
 from logs import log
 
 class KhosekhClient(discord.Client):
@@ -69,14 +70,18 @@ class KhosekhClient(discord.Client):
                 log('valid message')
                 authcode = terms[1]
                 log(authcode)
-                tokens = spotify.request_tokens(authcode)
-                log('tokens requested')
-                if tokens:
+                try:
+                    tokens = spotify.request_tokens(authcode)
+                    profile = spotify.get_profile(tokens)
+                    log(message.author.id)
+                    log(profile)
+                    log('got profile, author, tokens')
+                    databasing.add_auth(message.author.id,tokens,profile)
                     await message.channel.send('Success! you have now been authenticated.')
                     log('success message sent')
-                    log(json.dumps(tokens))
-                else:
+                except spotify.NotAuthenticatedError:
                     await message.channel.send('Token failure?')
+                    log(token)
                     log('fail message sent')
                     
 
