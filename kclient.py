@@ -2,7 +2,7 @@
 # khosekh the bot
 # discord client
 
-import os,sys
+import os,sys,random
 
 import discord
 
