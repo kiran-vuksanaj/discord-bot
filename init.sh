@@ -41,9 +41,9 @@ else
 	. venv/bin/activate;
 	git show -s > logs/version.txt;
 	echo "Launching Client...";
-	echo "Launching Client..." >> logs/longterm.txt;
-	date >> logs/longterm.txt;
-	nohup python __init__.py &>> logs/longterm.txt &!
+	echo "Launching Client..." >> logs/console.txt;
+	date >> logs/console.txt;
+	nohup python __init__.py &>> logs/console.txt &!
 	deactivate;
 fi
 
