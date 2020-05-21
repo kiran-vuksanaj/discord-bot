@@ -93,7 +93,7 @@ def access_rest(endpoint,uid,method,json=None):
 
     return resp.json()
 
-Ì    
+
 def get_profile(tokens):
     if tokens == {}:
         raise NotAuthenticatedError('no access token')

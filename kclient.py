@@ -82,11 +82,17 @@ class KhosekhClient(discord.Client):
                     await message.channel.send('Token failure?')
                     print(token)
                     print('fail message sent')
-        elif message.contents.strip().startswith('$track'):
-            text = message.contents.strip()
+        elif message.content.strip().startswith('$track'):
+            text = message.content.strip()
             title = text[text.find(' '):].strip()
-            vchannel = discord_utl.find_vc_cnx(message.author.id)
-            spotify_user = get_spotuser(message.author.id)
+            vchannel = discord_utl.find_vc_cnx(message.author.id,message.guild)
+            playlist = spotify.create_playlist(message.author.id,title)
+            print(playlist)
+            databasing.register_channel(vchannel.id,message.author.id,playlist['id'])
+            await message.channel.send('Successfully Registered!')
+
+                
+                
 
         elif len(message.embeds) == 1 and message.embeds[0].title=="Now playing":
             print('now playing message')
