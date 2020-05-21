@@ -94,15 +94,32 @@ class KhosekhClient(discord.Client):
                 
                 
 
-        elif len(message.embeds) == 1 and message.embeds[0].title=="Now playing":
+        elif str(message.author)=='Groovy#7254'and len(message.embeds) == 1 and  message.embeds[0].title=="Now playing":
             print('now playing message')
+            
             regex_match = re.match(r'\s*\[(.*)\]\s*\((.*)\)\s*\[<@(\d+)>\]\s*',message.embeds[0].description)
             print('title: [{0}]'.format(regex_match.group(1)))
             print('link: [{0}]'.format(regex_match.group(2)))
             print('user: [{0}]'.format(int(regex_match.group(3))))
-            print( discord_utl.find_vc_cnx(message.author.id,message.guild).id )
+            link = regex_match.group(2)
+            vc = discord_utl.find_vc_cnx(message.author.id,message.guild)
+            vcdata = databasing.get_playlist_data(vc.id) or None
+            if vcdata:
+                # add song to registered playlist
+                if 'spotify.com' in link:
+                    song_id = link[link.rfind('/')+1:]
+                    if databasing.add_song_nonduplicate(song_id,vcdata['playlist_id']):
+                        spotify.add_song(vc.id,song_id)
+                        await message.channel.send('Song added to playlist!')
+                    else:
+                        await message.channel.send('Song already exists in playlist! Skipping.')
+                else:
+                    await message.channel.send('In progress: parsing non-spotify links')
+            else:
+                print('passing, because channel is not registered')
             await message.channel.send('hey groovy whats good')
 
+            
 
         else:
             print('irrelevant message')
