@@ -12,6 +12,7 @@ def write_livelog():
 if __name__ == "__main__":
     
     sys.stdout.reconfigure(line_buffering=True)
+    sys.stderr.reconfigure(line_buffering=True)
 
     write_livelog()
 
