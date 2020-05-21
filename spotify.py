@@ -91,7 +91,7 @@ def access_rest(endpoint,uid,method,json=None):
             print(r_json)
             raise APIError
 
-    return resp.json()
+    return r_json
 
 
 def get_profile(tokens):
@@ -112,6 +112,17 @@ def create_playlist(uid,title):
         'description':'Khosekh Groove-Scratcher - Playlist made from Groovy Queue'
         }
     return access_rest('users/{0}/playlists',uid,'POST',json=params)    
+
+def add_song(channel_id,song):
+    cdata = databasing.get_playlist_data(channel_id)
+    endpoint = 'playlists/%s/tracks' % cdata['playlist_id']
+    params = {
+        "uris":[
+            "spotify:track:%s" % song
+            ]
+        }
+    return access_rest(endpoint,cdata['discord_id'],'POST',json=params)
+        
 
 # code = input('auth code: ')
 # tokens = request_tokens(code)
