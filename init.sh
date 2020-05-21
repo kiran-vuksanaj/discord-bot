@@ -43,7 +43,7 @@ else
 	echo "Launching Client...";
 	echo "Launching Client..." >> logs/console.txt;
 	date >> logs/console.txt;
-	nohup python __init__.py &>> logs/console.txt &!
+	nohup python3 __init__.py &>> logs/console.txt &!
 	deactivate;
 fi
 
