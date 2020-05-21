@@ -46,7 +46,6 @@ class KhosekhClient(discord.Client):
                 await message.channel.send(random.choice(messages))
                 print('paige message sent')
 
-
         elif message.content.strip() == '$auth':
             print('received auth command')
             auth_embed = discord.Embed(
@@ -83,7 +82,12 @@ class KhosekhClient(discord.Client):
                     await message.channel.send('Token failure?')
                     print(token)
                     print('fail message sent')
-        
+        elif message.contents.strip().startswith('$track'):
+            text = message.contents.strip()
+            title = text[text.find(' '):].strip()
+            vchannel = discord_utl.find_vc_cnx(message.author.id)
+            spotify_user = get_spotuser(message.author.id)
+
         elif len(message.embeds) == 1 and message.embeds[0].title=="Now playing":
             print('now playing message')
             regex_match = re.match(r'\s*\[(.*)\]\s*\((.*)\)\s*\[<@(\d+)>\]\s*',message.embeds[0].description)

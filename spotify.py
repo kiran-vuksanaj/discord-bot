@@ -11,6 +11,8 @@ from urllib.parse import urlencode
 from base64 import b64encode
 from json import dumps
 
+import databasing
+
 SPOTIFY_CLIENT_ID = getenv('SPOTIFY_CLIENT_ID').strip()
 SPOTIFY_CLIENT_SECRET = getenv('SPOTIFY_CLIENT_SECRET').strip()
 SPOTIFY_REDIRECT_URI = getenv('SPOTIFY_REDIRECT_URI').strip()
@@ -19,7 +21,8 @@ tokens = {}
 
 class NotAuthenticatedError(Exception):
     pass
-
+class APIError(Exception):
+    pass
 
 # wait ... this is a constant isnt it?
 def gen_requestlink():
@@ -40,16 +43,21 @@ def gen_requestlink():
     return AUTHORIZE_ENDPOINT+'?'+urlencode(params)
 
 
-def request_tokens(authcode):
+def request_tokens(code,refresh=False):
     auth_header = b64encode( str(SPOTIFY_CLIENT_ID+':'+SPOTIFY_CLIENT_SECRET).encode('ascii') )
     headers = {
         'Authorization':'Basic %s' % auth_header.decode('ascii')
         }
-
-    params = {
-        'grant_type':'authorization_code',
-        'code':authcode,
-        'redirect_uri':SPOTIFY_REDIRECT_URI,
+    if refresh:
+        params = {
+            'grant_type':'refresh_token',
+            'refresh_token':code
+            }
+    else:
+        params = {
+            'grant_type':'authorization_code',
+            'code':code,
+            'redirect_uri':SPOTIFY_REDIRECT_URI,
         }
     TOKEN_ENDPOINT = 'https://accounts.spotify.com/api/token'
     response = request('POST',TOKEN_ENDPOINT,headers=headers,data=params).json()
@@ -59,8 +67,33 @@ def request_tokens(authcode):
     else:
         return response
 
+def access_rest(endpoint,uid,method,json=None):
+    atoken = databasing.get_atoken(uid)
+    BASE_URL = 'https://api.spotify.com/v1/'
+    headers = {
+        'Authorization':'Bearer %s' % atoken,
+        'content-type':'application/json'
+        }
+    url = BASE_URL + endpoint.format(databasing.get_spotuser(uid))
+    resp = request(method,url,json=json,headers=headers)
+    r_json = resp.json()
+    if 'error' in r_json:
+        if r_json['error']['status']==401:
+            rtoken = databasing.get_rtoken(uid)
+            tokens = request_tokens(rtoken,refresh=True)
+            print('new tokens:',tokens)
+            if not 'refresh_token' in tokens:
+                tokens['refresh_token'] = rtoken
+            databasing.update_tokens(uid,tokens)
+            return access_rest(endpoint,uid,method,json=json)
+        else:
+            print('REST Error')
+            print(r_json)
+            raise APIError
 
-    
+    return resp.json()
+
+Ì    
 def get_profile(tokens):
     if tokens == {}:
         raise NotAuthenticatedError('no access token')
@@ -73,20 +106,12 @@ def get_profile(tokens):
 
 
 
-def create_playlist(tokens,username,title):
-    if tokens == {}:
-        raise NotAuthenticatedError('no access token')
-    endpoint = "https://api.spotify.com/v1/users/%s/playlists" % username
-    headers = {
-        'Authorization':'Bearer %s' % tokens['access_token'],
-        'Content-Type':'application/json'
-        }
+def create_playlist(uid,title):
     params = {
         'name':title,
         'description':'Khosekh Groove-Scratcher - Playlist made from Groovy Queue'
         }
-    response = request('POST',endpoint,headers=headers,json=params).json()
-    return response
+    return access_rest('users/{0}/playlists',uid,'POST',json=params)    
 
 # code = input('auth code: ')
 # tokens = request_tokens(code)
