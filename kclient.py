@@ -2,12 +2,13 @@
 # khosekh the bot
 # discord client
 
-import os,sys,random
+import os,sys,random,re
 
 import discord
 
 import spotify
 import databasing
+import discord_utl
 
 class KhosekhClient(discord.Client):
     async def on_ready(self):
@@ -82,14 +83,14 @@ class KhosekhClient(discord.Client):
                     await message.channel.send('Token failure?')
                     print(token)
                     print('fail message sent')
-                    
-
+        
         elif len(message.embeds) == 1 and message.embeds[0].title=="Now playing":
             print('now playing message')
             regex_match = re.match(r'\s*\[(.*)\]\s*\((.*)\)\s*\[<@(\d+)>\]\s*',message.embeds[0].description)
             print('title: [{0}]'.format(regex_match.group(1)))
             print('link: [{0}]'.format(regex_match.group(2)))
             print('user: [{0}]'.format(int(regex_match.group(3))))
+            print( discord_utl.find_vc_cnx(message.author.id,message.guild).id )
             await message.channel.send('hey groovy whats good')
 
 
