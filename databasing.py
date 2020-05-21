@@ -89,16 +89,17 @@ def register_channel(channel_id,uid,playlist_id):
     db.commit()
     return True
 
-def get_playlist_data(uid):
-    command = 'SELECT tracker_uid,spotify_user,playlist_id FROM vchannels WHERE channel_id=:uid'
-    c.execute(command,{'uid':uid})
+def get_playlist_data(channel_id):
+    command = 'SELECT tracker_uid,spotify_user,playlist_id FROM vchannels WHERE channel_id=:channel_id'
+    c.execute(command,{'channel_id':channel_id})
     resp = c.fetchone()
     db.commit()
     return {
         'discord_id':resp[0],
         'spotify_user':resp[1],
         'playlist_id':resp[2]
-        }
+        } or None
+
 
 
 # =============== SONG TABLE FUNCTIONS =============== #
