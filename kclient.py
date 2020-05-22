@@ -101,6 +101,7 @@ class KhosekhClient(discord.Client):
             print('title: [{0}]'.format(regex_match.group(1)))
             print('link: [{0}]'.format(regex_match.group(2)))
             print('user: [{0}]'.format(int(regex_match.group(3))))
+            title = regex_match.group(1)
             link = regex_match.group(2)
             vc = discord_utl.find_vc_cnx(message.author.id,message.guild)
             vcdata = databasing.get_playlist_data(vc.id) or None
@@ -114,7 +115,17 @@ class KhosekhClient(discord.Client):
                     else:
                         await message.channel.send('Song already exists in playlist! Skipping.')
                 else:
-                    await message.channel.send('In progress: parsing non-spotify links')
+                    searchdata = spotify.search_song(title,vcdata['discord_id'])
+                    resultstrings = map(lambda res: '[{0[name]}]({0[external_urls][spotify]}), by {0[artists][0][name]} on album {0[album][name]}'.format(res), searchdata['tracks']['items'])
+                    result_emojis = ['🥇','🥈','🥉']
+                    
+                    description = 'Select option to add to playlist:\n'+'\n'.join(map(lambda info,emoji: emoji+' '+info, resultstrings,result_emojis))
+                    response_embed = discord.Embed(title='Select Song:',type='rich',description=description)
+                    sent_message = await message.channel.send(embed=response_embed)
+                    for i in range(min(3,searchdata['tracks']['total'])):
+                        await sent_message.add_reaction(result_emojis[i])
+                    await sent_message.add_reaction('❌')
+                    await sent_message.add_reaction('➕')
             else:
                 print('passing, because channel is not registered')
             await message.channel.send('hey groovy whats good')
