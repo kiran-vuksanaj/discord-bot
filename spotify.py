@@ -67,7 +67,7 @@ def request_tokens(code,refresh=False):
     else:
         return response
 
-def access_rest(endpoint,uid,method,json=None):
+def access_rest(endpoint,uid,method,json=None,query=None):
     atoken = databasing.get_atoken(uid)
     BASE_URL = 'https://api.spotify.com/v1/'
     headers = {
@@ -75,7 +75,7 @@ def access_rest(endpoint,uid,method,json=None):
         'content-type':'application/json'
         }
     url = BASE_URL + endpoint.format(databasing.get_spotuser(uid))
-    resp = request(method,url,json=json,headers=headers)
+    resp = request(method,url,json=json,params=query,headers=headers)
     r_json = resp.json()
     if 'error' in r_json:
         if r_json['error']['status']==401:
@@ -85,7 +85,7 @@ def access_rest(endpoint,uid,method,json=None):
             if not 'refresh_token' in tokens:
                 tokens['refresh_token'] = rtoken
             databasing.update_tokens(uid,tokens)
-            return access_rest(endpoint,uid,method,json=json)
+            return access_rest(endpoint,uid,method,json=json,query=query)
         else:
             print('REST Error')
             print(r_json)
@@ -122,7 +122,14 @@ def add_song(channel_id,song):
             ]
         }
     return access_rest(endpoint,cdata['discord_id'],'POST',json=params)
-        
+
+def search_song(title,uid):
+    query = {
+        'q':title,
+        'type':'track',
+        'limit':3
+        }
+    return access_rest('search',uid,'GET',query=query)
 
 # code = input('auth code: ')
 # tokens = request_tokens(code)
@@ -130,3 +137,5 @@ def add_song(channel_id,song):
 # profile = get_profile(tokens)
 # print(dumps(profile,indent=4))
 # create_playlist(tokens,profile['id'],'dream of loneliness')
+# from json import dumps
+# print( dumps(search_song('Nights - Frank Ocean',286447132133818370),indent=4) )
