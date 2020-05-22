@@ -10,6 +10,8 @@ import spotify
 import databasing
 import discord_utl
 
+from asyncio import TimeoutError
+
 class KhosekhClient(discord.Client):
     async def on_ready(self):
         print('Logged on as {0}!'.format(self.user))
@@ -126,9 +128,30 @@ class KhosekhClient(discord.Client):
                         await sent_message.add_reaction(result_emojis[i])
                     await sent_message.add_reaction('❌')
                     await sent_message.add_reaction('➕')
+                    def valid_reacc(reaction, user):
+                        return reaction.message.id == sent_message.id and user.id == vcdata['discord_id'] and (reaction.emoji in result_emojis or reaction.emoji=='➕' or reaction.emoji=='❌')
+                    try:
+                        reaction, user = await self.wait_for('reaction_add',timeout=60.0, check=valid_reacc)
+                    except TimeoutError:
+                        await sent_message.edit(embed=None,content='Song addition menu expired.')
+                    else:
+                        if reaction.emoji in result_emojis:
+                            chosen_index = result_emojis.index(reaction.emoji)
+                            print(chosen_index)
+                            song_id = searchdata['tracks']['items'][chosen_index]['id']
+                            if databasing.add_song_nonduplicate(song_id,vcdata['playlist_id']):
+                                spotify.add_song(vc.id,song_id)
+                                response_embed.description = 'Option {0} added to playlist.'.format(chosen_index+1)
+                            else:
+                                response_embed.description = 'Option {0} chosen, skipped as duplicate.'.format(chosen_index+1)
+                        elif reaction.emoji=='❌':
+                            response_embed.description = 'song addition cancelled.'
+                        elif reaction.emoji=='➕':
+                            response_embed.description = 'Choose other song: feature coming soon.'
+                        await sent_message.edit(embed=response_embed)
             else:
                 print('passing, because channel is not registered')
-            await message.channel.send('hey groovy whats good')
+
 
             
 
