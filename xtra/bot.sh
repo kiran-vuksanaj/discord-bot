@@ -22,14 +22,14 @@ while getopts ":phrkl:" opt; do
 	exit 0;
     fi;
     if [[ $opt == "l" ]]; then
-	tail -n $OPTARG logs/console.txt;
+	tail -n $OPTARG -f logs/console.txt;
 	exit 0;
     fi;
     if [[ $opt == "?" ]]; then
 	echo "Usage: ./scripts/bot.sh [-hkpr] [-l [<lines>]]"
     fi;
     if [[ $opt == ":" ]]; then
-	tail -n 25 logs/console.txt;
+	tail -n 25 -f logs/console.txt;
 	exit 0;
     fi;
 done
