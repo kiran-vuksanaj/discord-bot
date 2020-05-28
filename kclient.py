@@ -9,7 +9,9 @@ import discord
 import spotify
 import databasing
 import discord_utl
+import talkto
 
+from argparse import ArgumentParser
 from asyncio import TimeoutError
 
 class KhosekhClient(discord.Client):
@@ -47,6 +49,11 @@ class KhosekhClient(discord.Client):
                 print(messages)
                 await message.channel.send(random.choice(messages))
                 print('paige message sent')
+
+        elif message.content.strip().startswith('$talkto'):
+            response = talkto.talkto(message.content)
+            await message.channel.send(response)
+
 
         elif message.content.strip() == '$auth':
             print('received auth command')

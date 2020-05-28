@@ -31,6 +31,10 @@ def init_tables():
         'songs' : [
             ['song_id','TEXT'],
             ['playlist_id','TEXT']
+            ] ,
+        'phrases' : [
+            ['name','TEXT'],
+            ['phrase','TEXT']
             ]
         }
     for table in tables:
@@ -117,7 +121,24 @@ def add_song_nonduplicate(song_id,playlist_id):
         db.commit()
         return True
     
-        
+# =============== PHRASE TABLE FUNCTIONS =============== #
+
+def addphrase(name,phrase):
+    command = 'INSERT INTO phrases (name,phrase) VALUES (?, ?)'
+    params = (name,phrase)
+    c.execute(command,params)
+    db.commit()
+    return True
+
+def phrases(name):
+    command = 'SELECT phrase FROM phrases WHERE name=?;'
+    c.execute(command, (name,))
+    db.commit()
+    res = c.fetchall()
+    if res:
+        return list(map(lambda ary: ary[0], res))
+    else:
+        return []
 
 # =============== CONFIG FUNCTION CALLS =============== #
 init_tables()
