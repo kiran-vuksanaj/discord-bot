@@ -158,10 +158,11 @@ class KhosekhClient(discord.Client):
                         await sent_message.edit(embed=response_embed)
             else:
                 print('passing, because channel is not registered')
-
-
+        elif re.search(r'[Nn]i+[ -]?[Nn]i+',message.content):
+            await message.channel.send('*purrs and curls up on your chest*')
             
 
         else:
+            regex_match = re.match(r'[Nn]i+[ -]?[Nn]i+')
             print('irrelevant message')
 
