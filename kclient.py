@@ -163,6 +163,5 @@ class KhosekhClient(discord.Client):
             
 
         else:
-            regex_match = re.match(r'[Nn]i+[ -]?[Nn]i+')
             print('irrelevant message')
 
